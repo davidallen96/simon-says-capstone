@@ -191,7 +191,7 @@ function getRandomItem(collection) {
  */
 function setText(element, text) {
   // TODO: Write your code here.
-  document.getElementById(element).textContent = text;
+  element.textContent = text;
   return element;
 }
 
@@ -210,6 +210,15 @@ function setText(element, text) {
 
 function activatePad(color) {
   // TODO: Write your code here.
+  let pad = pads.find((element) => {
+    element.color === color;
+  })
+
+  pad.selector.classList.add("activated");
+
+  pad.sound.play();
+
+  setTimeout(pad.selector.classList.remove("activated"), 500);
 }
 
 /**
@@ -228,6 +237,11 @@ function activatePad(color) {
 
 function activatePads(sequence) {
   // TODO: Write your code here.
+  let delay = 600;
+
+  sequence.forEach((element, index) => {
+    setTimeout(activatePad(pads[element].color), delay*(index+1));
+  });
 }
 
 /**
@@ -255,8 +269,17 @@ function activatePads(sequence) {
  */
  function playComputerTurn() {
   // TODO: Write your code here.
+  // padContainer.classList.add("unclickable");
 
-  setTimeout(() => playHumanTurn(roundCount), roundCount * 600 + 1000); // 5
+  // setText(statusSpan, "The computer's turn...");
+
+  // setText(heading, `Round ${roundCount} of ${maxRoundCount}`);
+
+  // computerSequence.push(getRandomItem([1, 2, 3, 4]));
+
+  // activatePads(computerSequence);
+
+  // setTimeout(() => playHumanTurn(roundCount), roundCount * 600 + 1000); // 5
 }
 
 /**
