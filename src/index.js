@@ -210,15 +210,18 @@ function setText(element, text) {
 
 function activatePad(color) {
   // TODO: Write your code here.
-  let pad = pads.find((element) => {
-    element.color === color;
-  })
+  const pad = pads.find(element =>
+    element.color === color);
+  
+  if(pad){
+    pad.selector.classList.add("activated");
 
-  pad.selector.classList.add("activated");
+    pad.sound.play();
 
-  pad.sound.play();
-
-  setTimeout(pad.selector.classList.remove("activated"), 500);
+    setTimeout(() => {
+      pad.selector.classList.remove("activated")
+    }, 500);
+  } 
 }
 
 /**
@@ -237,10 +240,8 @@ function activatePad(color) {
 
 function activatePads(sequence) {
   // TODO: Write your code here.
-  let delay = 600;
-
-  sequence.forEach((element, index) => {
-    setTimeout(activatePad(pads[element].color), delay*(index+1));
+  sequence.forEach((element) => {
+    setTimeout(() => activatePad(element), 600*sequence.length);
   });
 }
 
@@ -269,17 +270,17 @@ function activatePads(sequence) {
  */
  function playComputerTurn() {
   // TODO: Write your code here.
-  // padContainer.classList.add("unclickable");
+  padContainer.classList.add("unclickable");
 
-  // setText(statusSpan, "The computer's turn...");
+  setText(statusSpan, "The computer's turn...");
 
-  // setText(heading, `Round ${roundCount} of ${maxRoundCount}`);
+  setText(heading, `Round ${roundCount} of ${maxRoundCount}`);
 
-  // computerSequence.push(getRandomItem([1, 2, 3, 4]));
+  computerSequence.push(getRandomItem(["red", "green", "blue", "yellow"]));
 
-  // activatePads(computerSequence);
+  activatePads(computerSequence);
 
-  // setTimeout(() => playHumanTurn(roundCount), roundCount * 600 + 1000); // 5
+  setTimeout(() => playHumanTurn(), roundCount * 600 + 1000); // 5
 }
 
 /**
@@ -291,6 +292,9 @@ function activatePads(sequence) {
  */
 function playHumanTurn() {
   // TODO: Write your code here.
+  padContainer.classList.remove("unclickable");
+
+  setText(statusSpan, ``);
 }
 
 /**
