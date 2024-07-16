@@ -117,6 +117,13 @@ function padHandler(event) {
   if (!color) return;
 
   // TODO: Write your code here.
+  const pad = pads.find(element =>
+    element.color === color);
+
+  pad.sound.play();
+
+  checkPress(color);
+
   return color;
 }
 
@@ -216,11 +223,9 @@ function activatePad(color) {
   if(pad){
     pad.selector.classList.add("activated");
 
-    pad.sound.play();
+    //pad.sound.play();
 
-    setTimeout(() => {
-      pad.selector.classList.remove("activated")
-    }, 500);
+    setTimeout(() => pad.selector.classList.remove("activated"), 500);
   } 
 }
 
@@ -293,8 +298,7 @@ function activatePads(sequence) {
 function playHumanTurn() {
   // TODO: Write your code here.
   padContainer.classList.remove("unclickable");
-
-  setText(statusSpan, ``);
+  setText(statusSpan, /player/i);
 }
 
 /**
@@ -321,6 +325,22 @@ function playHumanTurn() {
  */
 function checkPress(color) {
   // TODO: Write your code here.
+  playerSequence.push(color);
+
+  const index = playerSequence.length - 1;
+
+  const remainingPresses = computerSequence.length - playerSequence.length;
+
+  setText(statusSpan, `${remainingPresses} press left`);
+
+  if(computerSequence[index] !== playerSequence[index]){
+    resetGame("f is for failure");
+    return
+  }
+
+  else if(remainingPresses === 0){
+    checkRound();
+  }
 }
 
 /**
@@ -340,6 +360,15 @@ function checkPress(color) {
 
 function checkRound() {
   // TODO: Write your code here.
+  if(playerSequence.length === maxRoundCount){
+    resetGame("Yo 'grats you won bro.");
+  }
+  else{
+    roundCount += 1;
+    playerSequence = [];
+    setText(statusSpan, "Ayy gimme another one");
+    setTimeout(() => playComputerTurn(), 1000);
+  }
 }
 
 /**
@@ -353,14 +382,28 @@ function checkRound() {
  */
 function resetGame(text) {
   // TODO: Write your code here.
+  computerSequence = [];
+  playerSequence = [];
+  roundCount = 0;
 
-  // Uncomment the code below:
-  // alert(text);
-  // setText(heading, "Simon Says");
-  // startButton.classList.remove("hidden");
-  // statusSpan.classList.add("hidden");
-  // padContainer.classList.add("unclickable");
+  //Uncomment the code below:
+  alert(text);
+  setText(heading, "Simon Says");
+  startButton.classList.remove("hidden");
+  statusSpan.classList.add("hidden");
+  padContainer.classList.add("unclickable");
 }
+
+//
+function preloadAudio() {
+  pads.forEach(pad => {
+    pad.sound.preload = 'auto';
+    pad.sound.load();
+  });
+}
+
+// Call this when the page loads
+window.addEventListener('load', preloadAudio);
 
 /**
  * Please do not modify the code below.
