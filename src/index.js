@@ -7,6 +7,13 @@
  const statusSpan = document.querySelector(".js-status"); // Use querySelector() to get the status element
  const heading = document.querySelector(".js-heading"); // Use querySelector() to get the heading element
  const padContainer = document.querySelector(".js-pad-container"); // Use querySelector() to get the heading element
+ const difficultyButton = document.querySelector(".js-difficulty-button");
+ const difficultyLevels = document.querySelector(".js-difficulty-levels");
+ //elements for difficulty levels
+ const difficultyLevel1 = document.querySelector(".js-level-1");
+ const difficultyLevel2 = document.querySelector(".js-level-2");
+ const difficultyLevel3 = document.querySelector(".js-level-3");
+ const difficultyLevel4 = document.querySelector(".js-level-4");
 
 /**
  * VARIABLES
@@ -15,6 +22,7 @@ let computerSequence = []; // track the computer-generated sequence of pad press
 let playerSequence = []; // track the player-generated sequence of pad presses
 let maxRoundCount = 0; // the max number of rounds, varies with the chosen level
 let roundCount = 0; // track the number of rounds that have been played so far
+let difficultyLevel = 0; // variable used to set difficulty level
 
 /**
  *
@@ -35,23 +43,23 @@ let roundCount = 0; // track the number of rounds that have been played so far
   {
     color: "red",
     selector: document.querySelector(".js-pad-red"),
-    sound: new Audio("../assets/simon-says-sound-1.mp3"),
+    sound: new Audio("./assets/simon-says-sound-1.mp3"),
   },
   // TODO: Add the objects for the green, blue, and yellow pads. Use object for the red pad above as an example.
   {
     color: "green",
     selector: document.querySelector(".js-pad-green"),
-    sound: new Audio("../assets/simon-says-sound-2.mp3"),
+    sound: new Audio("./assets/simon-says-sound-2.mp3"),
   },
   {
     color: "blue",
     selector: document.querySelector(".js-pad-blue"),
-    sound: new Audio("../assets/simon-says-sound-3.mp3"),
+    sound: new Audio("./assets/simon-says-sound-3.mp3"),
   },
   {
     color: "yellow",
     selector: document.querySelector(".js-pad-yellow"),
-    sound: new Audio("../assets/simon-says-sound-4.mp3"),
+    sound: new Audio("./assets/simon-says-sound-4.mp3"),
   },
 ];
 
@@ -62,10 +70,83 @@ let roundCount = 0; // track the number of rounds that have been played so far
 padContainer.addEventListener("click", padHandler);
 // TODO: Add an event listener `startButtonHandler()` to startButton.
 startButton.addEventListener("click", startButtonHandler);
+difficultyButton.addEventListener("click", difficultyButtonHandler);
+//listener for difficulty level buttons
+difficultyLevel1.addEventListener("click", difficultyLevel1Handler);
+difficultyLevel2.addEventListener("click", difficultyLevel2Handler);
+difficultyLevel3.addEventListener("click", difficultyLevel3Handler);
+difficultyLevel4.addEventListener("click", difficultyLevel4Handler);
 
 /**
  * EVENT HANDLERS
  */
+
+//initiates the difficulty levels
+function difficultyButtonHandler(){
+  //change heading
+  setText(heading, "How difficult do you want this to be?");
+
+  //hide the difficulty button
+  difficultyButton.classList.add("hidden");
+
+  //reveal the difficulty options
+  let buttons = difficultyLevels.querySelectorAll(".start-button");
+  buttons.forEach((button) => {
+    button.classList.remove("hidden");
+  });
+}
+
+//sets value of difficultyLevel to 1 when difficulty level 1 is selected, then hide all buttons, and display the start button
+function difficultyLevel1Handler(){
+  difficultyLevel = 1;
+
+  let buttons = difficultyLevels.querySelectorAll(".start-button");
+  buttons.forEach((button) => {
+    button.classList.add("hidden");
+  });
+  //changes heading
+  setText(heading, "Let's do this!");
+  startButton.classList.remove("hidden");
+}
+
+//sets value of difficultyLevel to 2 when difficulty level 2 is selected, then hide all buttons, and display the start button
+function difficultyLevel2Handler(){
+  difficultyLevel = 2;
+  
+  let buttons = difficultyLevels.querySelectorAll(".start-button");
+  buttons.forEach((button) => {
+    button.classList.add("hidden");
+  });
+  //changes heading
+  setText(heading, "Let's do this!");
+  startButton.classList.remove("hidden");
+}
+
+//sets value of difficultyLevel to 3 when difficulty level 3 is selected, then hide all buttons, and display the start button
+function difficultyLevel3Handler(){
+  difficultyLevel = 3;
+  
+  let buttons = difficultyLevels.querySelectorAll(".start-button");
+  buttons.forEach((button) => {
+    button.classList.add("hidden");
+  });
+  //changes heading
+  setText(heading, "Let's do this!");
+  startButton.classList.remove("hidden");
+}
+
+//sets value of difficultyLevel to 4 when difficulty level 4 is selected, then hide all buttons, and display the start button
+function difficultyLevel4Handler(){
+  difficultyLevel = 4;
+  
+  let buttons = difficultyLevels.querySelectorAll(".start-button");
+  buttons.forEach((button) => {
+    button.classList.add("hidden");
+  });
+  //changes heading
+  setText(heading, "Let's do this!");
+  startButton.classList.remove("hidden");
+}
 
 /**
  * Called when the start button is clicked.
@@ -83,16 +164,20 @@ startButton.addEventListener("click", startButtonHandler);
  */
 function startButtonHandler() {
   // TODO: Write your code here.
-  setLevel();
 
-  roundCount += 1;
+  maxRoundCount = setLevel(difficultyLevel);
 
-  startButton.classList.add("hidden");
+  if(maxRoundCount > 0){
+    roundCount += 1;
 
-  statusSpan.classList.remove("hidden");
+    startButton.classList.add("hidden");
 
-  playComputerTurn();
-  return { startButton, statusSpan };
+    statusSpan.classList.remove("hidden");
+
+    playComputerTurn();
+    return { startButton, statusSpan };
+  }
+
 }
 
 /**
@@ -223,7 +308,7 @@ function activatePad(color) {
   if(pad){
     pad.selector.classList.add("activated");
 
-    //pad.sound.play();
+    pad.sound.play();
 
     setTimeout(() => pad.selector.classList.remove("activated"), 500);
   } 
@@ -245,8 +330,8 @@ function activatePad(color) {
 
 function activatePads(sequence) {
   // TODO: Write your code here.
-  sequence.forEach((element) => {
-    setTimeout(() => activatePad(element), 600*sequence.length);
+  sequence.forEach((element, index) => {
+    setTimeout(() => activatePad(element), 600*(index + 1));
   });
 }
 
@@ -284,7 +369,7 @@ function activatePads(sequence) {
   computerSequence.push(getRandomItem(["red", "green", "blue", "yellow"]));
 
   activatePads(computerSequence);
-
+  
   setTimeout(() => playHumanTurn(), roundCount * 600 + 1000); // 5
 }
 
@@ -298,6 +383,7 @@ function activatePads(sequence) {
 function playHumanTurn() {
   // TODO: Write your code here.
   padContainer.classList.remove("unclickable");
+  
   setText(statusSpan, /player/i);
 }
 
@@ -334,7 +420,7 @@ function checkPress(color) {
   setText(statusSpan, `${remainingPresses} press left`);
 
   if(computerSequence[index] !== playerSequence[index]){
-    resetGame("f is for failure");
+    resetGame("Whoops, that's not right!");
     return
   }
 
@@ -361,12 +447,12 @@ function checkPress(color) {
 function checkRound() {
   // TODO: Write your code here.
   if(playerSequence.length === maxRoundCount){
-    resetGame("Yo 'grats you won bro.");
+    resetGame("You did it! Hooray!");
   }
   else{
     roundCount += 1;
     playerSequence = [];
-    setText(statusSpan, "Ayy gimme another one");
+    setText(statusSpan, "You got it!");
     setTimeout(() => playComputerTurn(), 1000);
   }
 }
